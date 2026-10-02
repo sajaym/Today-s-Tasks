@@ -3,196 +3,233 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Sunil – Payments</title>
+<meta name="color-scheme" content="light dark">
+<title>Sunil · Payments</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #07060b;
-    --text: #f5f3fa;
-    --muted: rgba(245,243,250,.62);
-    --green: #5fd68a;
-    --glass: rgba(255,255,255,.07);
-    --glass-edge: rgba(255,255,255,.22);
-    --blur: blur(28px) saturate(180%);
+    /* warm paper palette */
+    --paper: #f5f2ea;
+    --ink: #1f1d18;
+    --ink-2: #6b665b;
+    --ink-3: #9a9487;
+    --clay: #d97757;
+    --clay-deep: #b9532f;
+    --clay-glow: rgba(217,119,87,.30);
+    --sage: #4f8a5b;
+    --glass-fill: rgba(255,253,248,.55);
+    --glass-fill-2: rgba(255,253,248,.28);
+    --glass-edge: rgba(255,255,255,.85);
+    --glass-edge-low: rgba(120,100,70,.14);
+    --shadow: 0 1px 2px rgba(60,40,10,.06), 0 12px 32px -8px rgba(60,40,10,.18);
+    --serif: "Newsreader", "Tiempos Headline", Georgia, "Times New Roman", serif;
+    --sans: "Inter", -apple-system, "SF Pro Text", system-ui, sans-serif;
   }
-  * { box-sizing: border-box; margin: 0; -webkit-tap-highlight-color: transparent; }
-  html, body { height: 100%; }
-  body {
-    background: #000;
-    color: var(--text);
-    font-family: -apple-system, "SF Pro Display", "Inter", system-ui, sans-serif;
-    display: flex; justify-content: center;
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #181714;
+      --ink: #f1ede3;
+      --ink-2: #a8a295;
+      --ink-3: #75706a;
+      --clay-glow: rgba(217,119,87,.22);
+      --sage: #7fc08d;
+      --glass-fill: rgba(48,45,38,.52);
+      --glass-fill-2: rgba(48,45,38,.26);
+      --glass-edge: rgba(255,255,255,.22);
+      --glass-edge-low: rgba(255,255,255,.06);
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 16px 40px -10px rgba(0,0,0,.6);
+    }
   }
 
-  /* ---------- phone shell ---------- */
-  .app {
-    position: relative; width: 100%; max-width: 430px; height: 100dvh;
-    background: var(--bg); overflow: hidden;
-    display: flex; flex-direction: column;
-  }
-  /* ambient light blobs the glass refracts */
-  .blob { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .75; pointer-events: none; animation: drift 18s ease-in-out infinite alternate; }
-  .b1 { width: 280px; height: 280px; background: #6d28d9; top: 28%; right: -90px; }
-  .b2 { width: 240px; height: 240px; background: #0ea5e9; top: 6%; left: -100px; opacity: .45; animation-duration: 22s; }
-  .b3 { width: 260px; height: 260px; background: #d946ef; bottom: 4%; left: -80px; opacity: .4; animation-duration: 26s; }
-  @keyframes drift { to { transform: translate(30px, -40px) scale(1.15); } }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; background: var(--paper); }
+  body { font-family: var(--sans); color: var(--ink); display: flex; justify-content: center; -webkit-font-smoothing: antialiased; }
 
-  /* ---------- glass primitive ---------- */
+  .app { position: relative; width: 100%; max-width: 430px; height: 100dvh; overflow: hidden; isolation: isolate; }
+
+  /* soft atmosphere: the light the glass bends */
+  .app::before, .app::after { content: ""; position: absolute; z-index: -1; border-radius: 50%; filter: blur(60px); pointer-events: none; }
+  .app::before { width: 340px; height: 340px; right: -140px; top: 22%; background: var(--clay-glow); }
+  .app::after  { width: 300px; height: 300px; left: -150px; bottom: 6%; background: color-mix(in srgb, var(--clay) 14%, transparent); }
+
+  /* ---------- liquid glass ---------- */
   .glass {
     position: relative;
-    background: linear-gradient(135deg, rgba(255,255,255,.14), rgba(255,255,255,.04) 45%, rgba(255,255,255,.08));
-    backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
-    border: 1px solid rgba(255,255,255,.12);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,.35),
-      inset 0 -1px 0 rgba(255,255,255,.06),
-      inset 0 0 18px rgba(255,255,255,.04),
-      0 10px 30px rgba(0,0,0,.35);
+    background: linear-gradient(160deg, var(--glass-fill), var(--glass-fill-2));
+    -webkit-backdrop-filter: blur(22px) saturate(1.7) brightness(1.04);
+            backdrop-filter: blur(22px) saturate(1.7) brightness(1.04);
+    box-shadow: var(--shadow);
   }
-  .glass::before { /* specular sheen */
-    content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
-    background: radial-gradient(120% 70% at 20% -10%, rgba(255,255,255,.28), transparent 55%);
-    mix-blend-mode: soft-light;
+  /* luminous rim: bright top-left, faint bottom-right, like light caught on an edge */
+  .glass::before {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
+    background: linear-gradient(145deg, var(--glass-edge), transparent 38%, transparent 62%, var(--glass-edge-low));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
   }
 
-  /* ---------- status + header ---------- */
-  .status { position: relative; z-index: 3; display: flex; justify-content: space-between; align-items: center; padding: 14px 26px 6px; font-weight: 600; font-size: 15px; }
-  .status .badge { display:inline-grid; place-items:center; width:20px; height:20px; border-radius:50%; background:rgba(255,255,255,.85); color:#000; font-size:11px; margin-left:8px; }
-
+  /* ---------- header ---------- */
   header {
-    position: relative; z-index: 3; margin: 6px 12px 0; padding: 10px 14px;
-    border-radius: 28px; display: flex; align-items: center; gap: 12px;
+    position: absolute; z-index: 10; top: max(12px, env(safe-area-inset-top)); left: 12px; right: 12px;
+    height: 68px; border-radius: 34px; padding: 0 8px 0 8px;
+    display: flex; align-items: center; gap: 10px;
   }
-  .icon-btn { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: none; border: 0; color: var(--text); cursor: pointer; transition: background .2s, transform .2s; }
-  .icon-btn:hover { background: rgba(255,255,255,.12); }
-  .icon-btn:active { transform: scale(.9); }
-  .icon-btn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-  .avatar { width: 46px; height: 46px; border-radius: 50%; flex: none; background: linear-gradient(145deg,#e9d5c3,#a8805f); border: 2px solid rgba(255,255,255,.55); box-shadow: 0 4px 14px rgba(0,0,0,.4); position: relative; overflow: hidden; }
-  .avatar::before { content:""; position:absolute; left:50%; top:46%; width:22px; height:22px; margin-left:-11px; border-radius:50%; background:#3a2a22; }
-  .avatar::after { content:""; position:absolute; left:50%; bottom:-6px; width:34px; height:20px; margin-left:-17px; border-radius:50% 50% 0 0; background:#f4f4f4; }
-  .who { flex: 1; min-width: 0; }
-  .who h1 { font-size: 19px; font-weight: 700; letter-spacing: -.01em; }
-  .who p { font-size: 13.5px; color: var(--muted); }
+  .icon-btn { width: 44px; height: 44px; flex: none; border-radius: 50%; border: 0; background: transparent; color: var(--ink); display: grid; place-items: center; cursor: pointer; transition: background .2s, transform .15s; }
+  .icon-btn:hover { background: color-mix(in srgb, var(--ink) 7%, transparent); }
+  .icon-btn:active { transform: scale(.92); }
+  .icon-btn svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 
-  /* ---------- chat ---------- */
-  main { position: relative; z-index: 2; flex: 1; overflow-y: auto; padding: 18px 14px 20px; display: flex; flex-direction: column; gap: 10px; scrollbar-width: none; }
+  .monogram { width: 44px; height: 44px; flex: none; border-radius: 50%; display: grid; place-items: center;
+    font-family: var(--serif); font-size: 22px; font-weight: 500; color: #fff;
+    background: radial-gradient(circle at 30% 20%, #eb9674, var(--clay) 55%, var(--clay-deep));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 4px 12px -2px var(--clay-glow); }
+  .who { flex: 1; min-width: 0; line-height: 1.2; }
+  .who h1 { font-family: var(--serif); font-weight: 500; font-size: 21px; letter-spacing: -.01em; }
+  .who p { font-size: 12.5px; color: var(--ink-2); margin-top: 1px; font-variant-numeric: tabular-nums; }
+
+  /* ---------- conversation ---------- */
+  main { position: absolute; inset: 0; overflow-y: auto; padding: 100px 14px 108px; display: flex; flex-direction: column; gap: 10px; scrollbar-width: none; }
   main::-webkit-scrollbar { display: none; }
-  .day { align-self: center; margin: 14px 0 6px; padding: 5px 14px; border-radius: 999px; font-size: 13px; color: var(--muted); }
 
-  .row { display: flex; align-items: flex-start; gap: 10px; animation: rise .55s cubic-bezier(.2,.9,.3,1.2) backwards; }
+  .day { align-self: stretch; display: flex; align-items: center; gap: 14px; margin: 18px 6px 8px; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); font-weight: 500; }
+  .day::before, .day::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--glass-edge-low)); }
+  .day::after { background: linear-gradient(270deg, transparent, var(--glass-edge-low)); }
+
+  .row { display: flex; align-items: flex-end; gap: 8px; animation: settle .7s cubic-bezier(.16,1,.3,1) backwards; }
   .row.out { justify-content: flex-end; }
-  .row:nth-child(2){animation-delay:.05s}.row:nth-child(3){animation-delay:.1s}.row:nth-child(5){animation-delay:.15s}.row:nth-child(7){animation-delay:.2s}
-  @keyframes rise { from { opacity: 0; transform: translateY(18px) scale(.96); } }
-  .mini { width: 38px; height: 38px; border-radius: 50%; flex: none; border: 1.5px solid rgba(255,255,255,.5); background: linear-gradient(145deg,#e9d5c3,#a8805f); position: relative; overflow: hidden; }
-  .mini::before { content:""; position:absolute; left:50%; top:44%; width:16px; height:16px; margin-left:-8px; border-radius:50%; background:#3a2a22; }
-  .mini::after { content:""; position:absolute; left:50%; bottom:-5px; width:26px; height:15px; margin-left:-13px; border-radius:50% 50% 0 0; background:#f4f4f4; }
-  .me { width: 38px; height: 38px; border-radius: 50%; flex: none; display: grid; place-items: center; font-size: 22px; color: #fff; background: radial-gradient(circle at 30% 25%, #ffb73d, #b36b00); box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 6px 16px rgba(179,107,0,.45); }
+  .group { display: flex; flex-direction: column; gap: 8px; }
+  @keyframes settle { from { opacity: 0; transform: translateY(14px) scale(.97); filter: blur(4px); } }
+  .row:nth-of-type(1) { animation-delay: .05s; } .row:nth-of-type(2) { animation-delay: .15s; }
+
+  .avatar { width: 32px; height: 32px; flex: none; border-radius: 50%; display: grid; place-items: center; margin-bottom: 4px; }
+  .avatar.them { font-family: var(--serif); font-size: 15px; color: var(--ink-2); background: color-mix(in srgb, var(--ink) 9%, transparent); }
+  .avatar.me { background: var(--clay); color: #fff; box-shadow: inset 0 1px 0 rgba(255,255,255,.4); }
+  .avatar svg { width: 17px; height: 17px; }
 
   /* payment card */
-  .pay {
-    width: min(262px, 68%); border-radius: 24px; padding: 18px 20px 12px; overflow: hidden;
-    transition: transform .3s cubic-bezier(.2,.9,.3,1.3), box-shadow .3s;
-    cursor: pointer;
+  .pay { width: 268px; border-radius: 26px; padding: 15px 16px 16px 20px; cursor: pointer; overflow: hidden;
+    transition: transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s; }
+  .pay:hover { transform: translateY(-2px); }
+  .pay:active { transform: scale(.985); }
+  .pay > * { position: relative; z-index: 1; }
+
+  .top { display: flex; align-items: center; justify-content: space-between; font-size: 11.5px; letter-spacing: .09em; text-transform: uppercase; font-weight: 600; color: var(--ink-2); }
+  .status { display: inline-flex; align-items: center; gap: 7px; }
+  .status i { width: 16px; height: 16px; border-radius: 50%; display: grid; place-items: center; background: var(--sage); }
+  .status i svg { width: 10px; height: 10px; stroke: #fff; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .top time { font-weight: 500; letter-spacing: .02em; text-transform: none; font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+
+  .figure { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+  .amount { font-family: var(--serif); font-weight: 400; font-size: 46px; line-height: 1; letter-spacing: -.025em; font-variant-numeric: lining-nums tabular-nums; }
+  .amount sup { font-size: .5em; vertical-align: .55em; margin-right: 3px; letter-spacing: 0; color: var(--ink-2); font-weight: 400; }
+  .go { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: color-mix(in srgb, var(--ink) 7%, transparent); transition: transform .35s cubic-bezier(.16,1,.3,1), background .2s; }
+  .pay:hover .go { transform: translateX(3px); background: color-mix(in srgb, var(--ink) 12%, transparent); }
+  .go svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* paid = clay glass */
+  .pay.paid {
+    color: #fff;
+    background: linear-gradient(155deg, rgba(234,142,108,.92), rgba(196,92,56,.88) 70%, rgba(176,76,44,.92));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.4), inset 0 -10px 24px -12px rgba(120,40,10,.5), 0 14px 34px -10px rgba(185,83,47,.55);
   }
-  .pay:hover { transform: translateY(-3px) scale(1.015); }
-  .pay:active { transform: scale(.97); }
-  .pay.in { background: linear-gradient(135deg, rgba(255,255,255,.13), rgba(255,255,255,.03) 50%, rgba(255,255,255,.07)); }
-  .pay.out {
-    background: linear-gradient(135deg, rgba(167,100,255,.55), rgba(88,28,200,.38) 55%, rgba(124,58,237,.5));
-    border-color: rgba(200,160,255,.35);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.45), inset 0 -1px 0 rgba(255,255,255,.08), 0 14px 36px rgba(109,40,217,.45);
+  .pay.paid::before { background: linear-gradient(145deg, rgba(255,255,255,.7), transparent 40%, transparent 65%, rgba(255,255,255,.18)); }
+  .pay.paid .top, .pay.paid .top time, .pay.paid .amount sup { color: rgba(255,255,255,.82); }
+  .pay.paid .status i { background: rgba(255,255,255,.95); }
+  .pay.paid .status i svg { stroke: var(--clay-deep); }
+  .pay.paid .go { background: rgba(255,255,255,.2); box-shadow: inset 0 1px 0 rgba(255,255,255,.35); }
+  .pay.paid:hover .go { background: rgba(255,255,255,.3); }
+  .pay.paid::after { /* specular sweep */
+    content: ""; position: absolute; z-index: 0; inset: 0; pointer-events: none;
+    background: radial-gradient(90% 60% at 15% -10%, rgba(255,255,255,.35), transparent 60%);
   }
-  /* guilloche-style wave texture */
-  .pay::after {
-    content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: .5;
-    background: repeating-radial-gradient(ellipse 160% 60% at 50% 120%, transparent 0 7px, rgba(255,255,255,.09) 7px 8px);
-  }
-  .amount { position: relative; z-index: 1; font-size: 40px; font-weight: 800; letter-spacing: -.02em; text-shadow: 0 2px 12px rgba(0,0,0,.35); display: flex; justify-content: space-between; align-items: center; }
-  .go { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.14); box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 4px 12px rgba(0,0,0,.3); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
-  .go svg { width: 20px; height: 20px; stroke: rgba(255,255,255,.85); stroke-width: 2.2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-  .meta { position: relative; z-index: 1; margin-top: 8px; display: flex; align-items: center; gap: 10px; font-size: 22px; letter-spacing: .18em; font-weight: 500; color: var(--muted); }
-  .tick { width: 24px; height: 24px; border-radius: 50%; background: var(--green); display: grid; place-items: center; box-shadow: 0 0 14px rgba(95,214,138,.6); }
-  .tick svg { width: 14px; height: 14px; stroke: #06210f; stroke-width: 3.2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-  .time { position: relative; z-index: 1; text-align: right; font-size: 13px; color: var(--muted); margin-top: 4px; letter-spacing: .02em; }
+
+  .bubble { max-width: 76%; padding: 11px 16px; border-radius: 22px 22px 6px 22px; font-size: 16px; line-height: 1.4; color: #fff; background: linear-gradient(155deg, #e58a68, var(--clay-deep)); box-shadow: 0 8px 20px -8px rgba(185,83,47,.6), inset 0 1px 0 rgba(255,255,255,.35); }
 
   /* ---------- composer ---------- */
-  footer { position: relative; z-index: 3; padding: 8px 12px calc(14px + env(safe-area-inset-bottom)); }
-  .composer { border-radius: 999px; padding: 8px 8px 8px 22px; display: flex; align-items: center; gap: 4px; }
-  .composer input { flex: 1; min-width: 0; background: none; border: 0; outline: 0; color: var(--text); font: inherit; font-size: 19px; caret-color: #a78bfa; padding: 8px 0; }
-  .composer input::placeholder { color: var(--muted); }
-  .dot { position: relative; }
-  .dot::after { content:""; position:absolute; top:6px; right:6px; width:11px; height:11px; border-radius:50%; background:#ff453a; box-shadow:0 0 8px #ff453a; }
-  .send { width: 48px; height: 48px; border-radius: 50%; border: 0; cursor: pointer; display: grid; place-items: center; color: #fff;
-    background: linear-gradient(145deg, rgba(255,255,255,.28), rgba(255,255,255,.1)); box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 6px 16px rgba(0,0,0,.35);
-    transition: transform .2s, background .3s; }
-  .send:active { transform: scale(.88); }
-  .send.ready { background: linear-gradient(145deg, #a78bfa, #6d28d9); }
-  .send svg { width: 22px; height: 22px; fill: currentColor; }
-
-  /* home indicator */
-  .nav { display: flex; justify-content: space-around; padding: 6px 60px 12px; color: rgba(255,255,255,.35); position: relative; z-index: 3; }
-  .nav svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  footer { position: absolute; z-index: 10; left: 12px; right: 12px; bottom: max(14px, env(safe-area-inset-bottom)); }
+  .composer { height: 64px; border-radius: 32px; display: flex; align-items: center; padding: 0 8px 0 24px; gap: 2px; transition: box-shadow .3s; }
+  .composer:focus-within { box-shadow: var(--shadow), 0 0 0 3px color-mix(in srgb, var(--clay) 28%, transparent); }
+  .composer input { flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; background: transparent; color: var(--ink); font: 400 17px var(--sans); caret-color: var(--clay); }
+  .composer input::placeholder { color: var(--ink-3); }
+  .badge { position: relative; }
+  .badge::after { content: ""; position: absolute; top: 9px; right: 9px; width: 8px; height: 8px; border-radius: 50%; background: var(--clay); box-shadow: 0 0 0 2px var(--paper); }
+  .send { width: 48px; height: 48px; flex: none; margin-left: 4px; border: 0; border-radius: 50%; cursor: pointer; display: grid; place-items: center;
+    color: var(--ink-3); background: color-mix(in srgb, var(--ink) 8%, transparent); transition: all .3s cubic-bezier(.16,1,.3,1); }
+  .send svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .3s; }
+  .send.ready { color: #fff; background: linear-gradient(145deg, #e58a68, var(--clay-deep)); box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 8px 18px -6px rgba(185,83,47,.7); }
+  .send.ready svg { transform: translateY(-1px) rotate(-8deg); }
+  .send:active { transform: scale(.9); }
 
   @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="spark" viewBox="0 0 24 24"><g stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 2.5v19"/><path d="M2.5 12h19"/><path d="M5.3 5.3l13.4 13.4"/><path d="M18.7 5.3L5.3 18.7"/></g></symbol>
+  <symbol id="check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
+  <symbol id="arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+</svg>
+
 <div class="app">
-  <i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i>
-
-  <div class="status">
-    <span>6:22<span class="badge">2</span></span>
-    <span>5G · 62%</span>
-  </div>
-
   <header class="glass">
-    <button class="icon-btn" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
-    <div class="avatar"></div>
-    <div class="who"><h1>Sunil</h1><p>+919783288761</p></div>
-    <button class="icon-btn" aria-label="Reminder"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M3 6l3-3M21 6l-3-3"/></svg></button>
-    <button class="icon-btn" aria-label="Help"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 2.5-3 4.5M12 18h.01"/></svg></button>
+    <button class="icon-btn" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="monogram">S</div>
+    <div class="who"><h1>Sunil</h1><p>+91 97832 88761</p></div>
+    <button class="icon-btn" aria-label="Reminders"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="7.5"/><path d="M12 9v4.2l2.6 1.6M4 5.5L6.6 3M20 5.5L17.4 3"/></svg></button>
+    <button class="icon-btn" aria-label="Help"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="M9.3 9.2a2.8 2.8 0 015.4 1c0 1.8-2.7 2.2-2.7 4M12 17.6h.01"/></svg></button>
   </header>
 
   <main id="chat">
-    <div class="row"><div class="mini"></div><div class="stack" style="display:flex;flex-direction:column;gap:10px;width:100%">
-      <article class="pay glass in"><div class="amount">₹1,000<span class="go"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div><div class="meta"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>RECEIVED</div><div class="time">6:13 PM</div></article>
-      <article class="pay glass in"><div class="amount">₹2,000<span class="go"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div><div class="meta"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>RECEIVED</div><div class="time">6:13 PM</div></article>
-    </div></div>
-
-    <div class="day glass">September 04, 2026</div>
-
-    <div class="row out">
-      <article class="pay glass out"><div class="amount">₹1,500<span class="go"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div><div class="meta"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>PAID</div><div class="time">10:34 AM</div></article>
-      <div class="me">*</div>
+    <div class="row">
+      <div class="avatar them">S</div>
+      <div class="group">
+        <article class="pay glass">
+          <div class="top"><span class="status"><i><svg><use href="#check"/></svg></i>Received</span><time>6:13 PM</time></div>
+          <div class="figure"><div class="amount"><sup>₹</sup>1,000</div><span class="go"><svg viewBox="0 0 24 24"><use href="#arrow"/></svg></span></div>
+        </article>
+        <article class="pay glass">
+          <div class="top"><span class="status"><i><svg><use href="#check"/></svg></i>Received</span><time>6:13 PM</time></div>
+          <div class="figure"><div class="amount"><sup>₹</sup>2,000</div><span class="go"><svg viewBox="0 0 24 24"><use href="#arrow"/></svg></span></div>
+        </article>
+      </div>
     </div>
 
-    <div class="day glass">Today</div>
+    <div class="day">September 04, 2026</div>
 
     <div class="row out">
-      <article class="pay glass out"><div class="amount">₹1,500<span class="go"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div><div class="meta"><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>PAID</div><div class="time">6:22 PM</div></article>
-      <div class="me">*</div>
+      <article class="pay paid glass">
+        <div class="top"><span class="status"><i><svg><use href="#check"/></svg></i>Paid</span><time>10:34 AM</time></div>
+        <div class="figure"><div class="amount"><sup>₹</sup>1,500</div><span class="go"><svg viewBox="0 0 24 24"><use href="#arrow"/></svg></span></div>
+      </article>
+      <div class="avatar me"><svg><use href="#spark"/></svg></div>
+    </div>
+
+    <div class="day">Today</div>
+
+    <div class="row out">
+      <article class="pay paid glass">
+        <div class="top"><span class="status"><i><svg><use href="#check"/></svg></i>Paid</span><time>6:22 PM</time></div>
+        <div class="figure"><div class="amount"><sup>₹</sup>1,500</div><span class="go"><svg viewBox="0 0 24 24"><use href="#arrow"/></svg></span></div>
+      </article>
+      <div class="avatar me"><svg><use href="#spark"/></svg></div>
     </div>
   </main>
 
   <footer>
     <form class="composer glass" id="form" autocomplete="off">
-      <input id="msg" placeholder="Enter amount or chat" enterkeyhint="send">
-      <button type="button" class="icon-btn dot" aria-label="Calculator"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h3M9.5 6.5v3M14 8.5h2.5M8 14l3 3M11 14l-3 3M14 14.5h3M14 17.5h3"/></svg></button>
-      <button type="button" class="icon-btn" aria-label="More"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg></button>
-      <button class="send" id="send" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M3 11.2L20.5 3.5c.8-.35 1.6.45 1.25 1.25L14 22c-.4.9-1.7.8-1.9-.2l-1.4-6.3a1 1 0 00-.7-.7L3.7 13.1c-1-.2-1.1-1.5-.7-1.9z"/></svg></button>
+      <input id="msg" placeholder="Enter amount or chat" enterkeyhint="send" aria-label="Message">
+      <button type="button" class="icon-btn badge" aria-label="Calculator"><svg viewBox="0 0 24 24"><rect x="4.5" y="3" width="15" height="18" rx="3.5"/><path d="M8 8h3M9.5 6.5v3M14 8.5h2.2M8.3 14.2l2.8 2.8M11.1 14.2l-2.8 2.8M14 14.6h2.4M14 17.4h2.4"/></svg></button>
+      <button type="button" class="icon-btn" aria-label="More"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="M12 8v8M8 12h8"/></svg></button>
+      <button class="send" id="send" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg></button>
     </form>
   </footer>
-
-  <div class="nav">
-    <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-    <svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
-    <svg viewBox="0 0 24 24"><path d="M16 5l-9 7 9 7z"/></svg>
-  </div>
 </div>
 
 <script>
   const chat = document.getElementById('chat'), msg = document.getElementById('msg'), send = document.getElementById('send');
-  const tick = '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
-  const arrow = '<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+  const sym = id => `<svg viewBox="0 0 24 24"><use href="#${id}"/></svg>`;
   msg.addEventListener('input', () => send.classList.toggle('ready', msg.value.trim() !== ''));
   document.getElementById('form').addEventListener('submit', e => {
     e.preventDefault();
@@ -200,12 +237,13 @@
     const n = Number(v.replace(/[,₹\s]/g, ''));
     const time = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
     const row = document.createElement('div'); row.className = 'row out';
-    const body = isNaN(n)
-      ? `<article class="pay glass out" style="padding:14px 18px"><div style="position:relative;z-index:1;font-size:18px"></div><div class="time">${time}</div></article>`
-      : `<article class="pay glass out"><div class="amount">₹${n.toLocaleString('en-IN')}<span class="go">${arrow}</span></div><div class="meta"><span class="tick">${tick}</span>PAID</div><div class="time">${time}</div></article>`;
-    row.innerHTML = body + '<div class="me">*</div>';
-    if (isNaN(n)) row.querySelector('article div').textContent = v;
-    chat.appendChild(row); chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
+    if (isNaN(n) || n <= 0) {
+      const b = document.createElement('div'); b.className = 'bubble'; b.textContent = v; row.append(b);
+    } else {
+      row.innerHTML = `<article class="pay paid glass"><div class="top"><span class="status"><i><svg><use href="#check"/></svg></i>Paid</span><time>${time}</time></div><div class="figure"><div class="amount"><sup>₹</sup>${n.toLocaleString('en-IN')}</div><span class="go">${sym('arrow')}</span></div></article>`;
+    }
+    row.insertAdjacentHTML('beforeend', `<div class="avatar me">${sym('spark')}</div>`);
+    chat.append(row); chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
     msg.value = ''; send.classList.remove('ready');
   });
   chat.scrollTop = chat.scrollHeight;
